@@ -1,0 +1,11 @@
+server:
+  port: 8080
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+sqs:
+  gca-ingestion-url: "https://sqs.eu-west-2.amazonaws.com/394431749443/gca-ingestion-event"
+
+s3:
+  ingestion-bucket: "gca-ingestion"
