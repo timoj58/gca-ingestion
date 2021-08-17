@@ -1,5 +1,9 @@
 package com.tabiiki.gca.gcaingestion;
 
+import com.amazonaws.auth.InstanceProfileCredentialsProvider;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +25,13 @@ public class GcaIngestionApplication {
         return SqsAsyncClient.builder()
                 .region(Region.EU_WEST_2)
                 .build();
+    }
+
+    @Bean
+    public AmazonS3 amazonS3() {
+        return AmazonS3ClientBuilder.standard()
+                .withCredentials(new InstanceProfileCredentialsProvider(false))
+                .withRegion(Regions.EU_WEST_2).build();
     }
 
 }
