@@ -16,9 +16,12 @@ public class ApiHandler {
     private final ApiService apiService;
 
     public Mono<ServerResponse> getFinalClaim(ServerRequest request) {
-        return ServerResponse.ok().body(apiService.getFinalClaim(
-                UUID.fromString(request.pathVariable("id"))
-        ), String.class);
+        return ServerResponse.ok().bodyValue(
+                apiService.getFinalClaim(
+                        UUID.fromString(request.pathVariable("id")
+                        )
+                )
+        );
 
     }
 }
