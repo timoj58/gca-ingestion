@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.reactive.config.EnableWebFlux;
 import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.sns.SnsClient;
 import software.amazon.awssdk.services.sqs.SqsAsyncClient;
 
 
@@ -32,6 +33,14 @@ public class GcaIngestionApplication {
         return AmazonS3ClientBuilder.standard()
                 .withCredentials(new InstanceProfileCredentialsProvider(false))
                 .withRegion(Regions.EU_WEST_2).build();
+    }
+
+    @Bean
+    public SnsClient snsClient() {
+        return SnsClient.builder()
+                .region(Region.EU_WEST_2)
+                .build();
+
     }
 
 }

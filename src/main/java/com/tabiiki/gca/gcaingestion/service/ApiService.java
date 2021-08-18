@@ -1,11 +1,9 @@
 package com.tabiiki.gca.gcaingestion.service;
 
-import com.amazonaws.services.s3.model.S3ObjectSummary;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PathVariable;
 
-import java.util.List;
+import java.util.UUID;
 
 public interface ApiService {
-
-    List<S3ObjectSummary> objectSummaries(@RequestParam String folder);
+    String getFinalClaim(@PathVariable UUID id);
 }

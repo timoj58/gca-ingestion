@@ -1,14 +1,13 @@
 package com.tabiiki.gca.gcaingestion.service.impl;
 
-import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.tabiiki.gca.gcaingestion.facade.IS3Facade;
 import com.tabiiki.gca.gcaingestion.service.ApiService;
+import com.tabiiki.gca.gcaingestion.util.S3ObjectConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -18,8 +17,8 @@ public class ApiServiceImpl implements ApiService {
     private final IS3Facade s3Facade;
 
     @Override
-    public List<S3ObjectSummary> objectSummaries(@RequestParam String folder) {
-        return s3Facade.list(folder);
+    public String getFinalClaim(UUID id) {
+        return S3ObjectConverter.convert(s3Facade.get("final/" + id));
     }
 
 }

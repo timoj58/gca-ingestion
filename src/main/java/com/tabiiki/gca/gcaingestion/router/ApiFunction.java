@@ -14,10 +14,11 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 @Component
 public class ApiFunction {
 
+
     @Bean
-    @RouterOperation(beanClass = ApiService.class, beanMethod = "objectSummaries")
-    RouterFunction<ServerResponse> list(ApiHandler apiHandler) {
-        return route(RequestPredicates.GET("/list"), apiHandler::objectSummaries);
+    @RouterOperation(beanClass = ApiService.class, beanMethod = "getFinalClaim")
+    RouterFunction<ServerResponse> getFinalClaim(ApiHandler apiHandler) {
+        return route(RequestPredicates.GET("/final-claim/{id}"), apiHandler::getFinalClaim);
     }
 
 }

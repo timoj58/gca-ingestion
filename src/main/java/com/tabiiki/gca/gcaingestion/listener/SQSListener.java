@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import software.amazon.awssdk.services.sqs.SqsAsyncClient;
@@ -15,6 +16,7 @@ import software.amazon.awssdk.services.sqs.model.ReceiveMessageRequest;
 import software.amazon.awssdk.services.sqs.model.ReceiveMessageResponse;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 
 
 @RequiredArgsConstructor
@@ -26,6 +28,9 @@ public class SQSListener {
     private final SqsAsyncClient sqsAsyncClient;
     private final String queueUrl;
 
+    private Mono<ReceiveMessageResponse> receiveMessageResponse;
+    private Disposable disposable;
+
     @Autowired
     public SQSListener(
             @Value("${sqs.gca-ingestion-url}") String queueUrl,
@@ -35,11 +40,11 @@ public class SQSListener {
         this.queueUrl = queueUrl;
         this.ingestionService = ingestionService;
         this.sqsAsyncClient = sqsAsyncClient;
+        this.receiveMessageResponse = create();
     }
 
-    @PostConstruct
-    private void init() {
-        Mono<ReceiveMessageResponse> receiveMessageResponse = Mono.fromFuture(() ->
+    private Mono<ReceiveMessageResponse> create() {
+        return Mono.fromFuture(() ->
                 sqsAsyncClient.receiveMessage(
                         ReceiveMessageRequest.builder()
                                 .maxNumberOfMessages(5)
@@ -49,23 +54,38 @@ public class SQSListener {
                                 .build()
                 )
         );
+    }
 
-        //TODO graceful shut down as errors otherwise...needs latch on shut down.
-        receiveMessageResponse
+    @PostConstruct
+    private void init() {
+
+        disposable = receiveMessageResponse
                 .repeat()
                 .retry()
                 .map(ReceiveMessageResponse::messages)
                 .map(Flux::fromIterable)
                 .flatMap(messageFlux -> messageFlux)
                 .subscribe(message ->
-                    Mono.just(S3EventNotification.parseJson(message.body()))
-                            .doOnNext(ingestionService::ingest)
-                            //note always delete event as we handle errors via ingestion service
-                            .doFinally(delete ->
-                                    sqsAsyncClient.deleteMessage(DeleteMessageRequest.builder().queueUrl(queueUrl).receiptHandle(message.receiptHandle()).build())
-                                            .thenAccept(deleteMessageResponse -> log.info("deleted message with handle " + message.receiptHandle())))
-                            .subscribe()
+                        Mono.just(S3EventNotification.parseJson(message.body()))
+                                .doOnNext(ingestionService::ingest)
+                                //note always delete event as we handle errors via ingestion service
+                                .doFinally(delete ->
+                                        sqsAsyncClient.deleteMessage(
+                                                DeleteMessageRequest.builder()
+                                                        .queueUrl(queueUrl)
+                                                        .receiptHandle(message.receiptHandle())
+                                                        .build()
+                                        ).thenAccept(deleteMessageResponse -> log.info("deleted message with handle " + message.receiptHandle())))
+                                .subscribe()
                 );
+    }
+
+
+    @PreDestroy
+    private void shutdown() {
+        log.info("shutdown hook...");
+        sqsAsyncClient.close();
+        disposable.dispose();
     }
 }
 

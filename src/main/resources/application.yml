@@ -9,3 +9,6 @@ sqs:
 
 s3:
   ingestion-bucket: "gca-ingestion"
+
+sns:
+  ingestion-topic: "arn:aws:sns:eu-west-2:394431749443:gca-ingestion-topic"

@@ -3,6 +3,7 @@ package com.tabiiki.gca.gcaingestion.facade;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ListObjectsV2Request;
 import com.amazonaws.services.s3.model.ListObjectsV2Result;
+import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +38,8 @@ public class S3Facade implements IS3Facade {
     }
 
     @Override
-    public void get(String key) {
-
+    public S3Object get(String key) {
+        return amazonS3.getObject(gcaBucket, key);
     }
 
     @Override

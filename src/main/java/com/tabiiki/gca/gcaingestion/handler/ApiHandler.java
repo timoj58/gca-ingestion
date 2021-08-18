@@ -7,16 +7,18 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
+import java.util.UUID;
+
 @RequiredArgsConstructor
 @Component
 public class ApiHandler {
 
     private final ApiService apiService;
 
-    public Mono<ServerResponse> objectSummaries(ServerRequest request) {
-        return ServerResponse.ok().bodyValue(apiService.objectSummaries(
-                request.queryParam("folder").get()
-        ));
-    }
+    public Mono<ServerResponse> getFinalClaim(ServerRequest request) {
+        return ServerResponse.ok().body(apiService.getFinalClaim(
+                UUID.fromString(request.pathVariable("id"))
+        ), String.class);
 
+    }
 }
