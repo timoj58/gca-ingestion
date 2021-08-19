@@ -20,7 +20,7 @@ public class SNSPublisher {
 
     @Autowired
     public SNSPublisher(
-            @Value("${sns.ingestion-topic}") String gcaIngestionTopic,
+            @Value("${aws.sns.ingestion-topic}") String gcaIngestionTopic,
             SnsClient snsClient
     ) {
         this.gcaIngestionTopic = gcaIngestionTopic;

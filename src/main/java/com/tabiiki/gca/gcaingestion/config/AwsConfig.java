@@ -24,7 +24,8 @@ public class AwsConfig {
     public AmazonS3 amazonS3() {
         return AmazonS3ClientBuilder.standard()
                 .withCredentials(new InstanceProfileCredentialsProvider(false))
-                .withRegion(Regions.EU_WEST_2).build();
+                .withRegion(Regions.EU_WEST_2)
+                .build();
     }
 
     @Bean

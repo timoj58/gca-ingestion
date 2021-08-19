@@ -21,7 +21,7 @@ public class SQSMessageClient {
 
     @Autowired
     public SQSMessageClient(
-            @Value("${sqs.gca-ingestion-url}") String queueUrl,
+            @Value("${aws.sqs.gca-ingestion-url}") String queueUrl,
             SqsAsyncClient sqsAsyncClient
     ) {
         this.queueUrl = queueUrl;

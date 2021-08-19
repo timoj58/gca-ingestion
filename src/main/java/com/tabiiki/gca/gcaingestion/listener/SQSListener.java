@@ -36,6 +36,7 @@ public class SQSListener {
 
         log.info("starting listener...");
 
+        //do not listen to intellij hints, we need the supplier version as it wraps the response until subscription
         Mono.fromFuture(() -> sqsMessageClient.receive())
                 .repeat(repeater::get)
                 .retry()
@@ -55,8 +56,8 @@ public class SQSListener {
     @PreDestroy
     public void shutdown() {
         log.info("shutdown hook...");
-        repeater.set(false);
         sqsMessageClient.close();
+        repeater.set(false);
     }
 }
 

@@ -14,7 +14,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 @Component
 public class ApiFunction {
 
-
     @Bean
     @RouterOperation(beanClass = ApiService.class, beanMethod = "getFinalClaim")
     RouterFunction<ServerResponse> getFinalClaim(ApiHandler apiHandler) {

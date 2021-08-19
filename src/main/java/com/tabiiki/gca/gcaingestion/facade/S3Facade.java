@@ -21,7 +21,7 @@ public class S3Facade implements IS3Facade {
     private final String gcaBucket;
 
     @Autowired
-    public S3Facade(@Value("${s3.ingestion-bucket}") String gcaBucket,
+    public S3Facade(@Value("${aws.s3.ingestion-bucket}") String gcaBucket,
                     AmazonS3 amazonS3) {
         this.gcaBucket = gcaBucket;
         this.amazonS3 = amazonS3;

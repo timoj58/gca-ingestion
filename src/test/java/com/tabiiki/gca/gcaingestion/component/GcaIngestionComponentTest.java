@@ -37,18 +37,16 @@ public class GcaIngestionComponentTest {
     @BeforeEach
     public void init(){
 
-
         PublishResponse publishResponse = mock(PublishResponse.class);
         SdkHttpResponse sdkHttpResponse = mock(SdkHttpResponse.class);
 
         when(snsClient.publish(any(PublishRequest.class))).thenReturn(publishResponse);
         when(publishResponse.sdkHttpResponse()).thenReturn(sdkHttpResponse);
         when(sdkHttpResponse.statusCode()).thenReturn(200);
-
     }
 
     @Test
-    public void happyPathTest() throws InterruptedException {
+    public void smokeTest() throws InterruptedException {
 
         CompletableFuture<ReceiveMessageResponse> message = CompletableFuture.supplyAsync(
                 () -> ReceiveMessageResponse.builder().messages(
@@ -59,14 +57,13 @@ public class GcaIngestionComponentTest {
         when(sqsMessageClient.receive()).thenReturn(message);
         CompletableFuture.runAsync(sqsListener::init);
 
-        Thread.sleep(1000);
+        Thread.sleep(1000); //due to subscription / netty async
 
         sqsListener.shutdown();
 
-        verify(snsClient, atLeastOnce()).publish(any(PublishRequest.class));
         verify(is3Facade, atLeastOnce()).put(anyString(), anyString());
+        verify(snsClient, atLeastOnce()).publish(any(PublishRequest.class));
         verify(sqsMessageClient, atLeastOnce()).delete(any(Message.class));
-
     }
 
 }
