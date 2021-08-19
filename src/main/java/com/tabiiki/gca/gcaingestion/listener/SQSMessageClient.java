@@ -35,8 +35,7 @@ public class SQSMessageClient {
                         .queueUrl(queueUrl)
                         .waitTimeSeconds(10)
                         .visibilityTimeout(30)
-                        .build()
-        );
+                        .build());
     }
 
     public void delete(Message message) {

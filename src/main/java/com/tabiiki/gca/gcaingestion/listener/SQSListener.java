@@ -34,21 +34,24 @@ public class SQSListener {
     @PostConstruct
     public void init() {
 
-        Mono.fromFuture(sqsMessageClient.receive())
+        log.info("starting listener...");
+
+        Mono.fromFuture(() -> sqsMessageClient.receive())
                 .repeat(repeater::get)
                 .retry()
                 .map(ReceiveMessageResponse::messages)
                 .map(Flux::fromIterable)
                 .flatMap(messageFlux -> messageFlux)
                 .subscribe(message ->
-                        Mono.just(S3EventNotification.parseJson(message.body()))
-                                .doOnNext(ingestionService::ingest)
-                                .doFinally(delete -> sqsMessageClient.delete(message)
-                                ).subscribe()
+                        Mono.just(
+                                S3EventNotification.parseJson(message.body())
+                        ).doOnNext(ingestionService::ingest)
+                                .doFinally(delete -> sqsMessageClient.delete(message))
+                                .subscribe()
                 );
     }
 
-    
+
     @PreDestroy
     public void shutdown() {
         log.info("shutdown hook...");
