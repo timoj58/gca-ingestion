@@ -15,7 +15,7 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class S3Facade implements IS3Facade {
+public class S3Facade {
 
     private final AmazonS3 amazonS3;
     private final String gcaBucket;
@@ -27,22 +27,18 @@ public class S3Facade implements IS3Facade {
         this.amazonS3 = amazonS3;
     }
 
-    @Override
     public void put(String key, String json) {
         amazonS3.putObject(gcaBucket, key, json);
     }
 
-    @Override
     public void put(String bucket, String key, String csv) {
         amazonS3.putObject(bucket, key, csv);
     }
 
-    @Override
     public S3Object get(String key) {
         return amazonS3.getObject(gcaBucket, key);
     }
 
-    @Override
     public List<S3ObjectSummary> list(String folder) {
         final List<S3ObjectSummary> objectSummaries = new ArrayList<>();
 

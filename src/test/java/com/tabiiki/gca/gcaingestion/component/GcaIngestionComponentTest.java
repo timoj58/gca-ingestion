@@ -1,10 +1,10 @@
 package com.tabiiki.gca.gcaingestion.component;
 
 import com.amazonaws.services.s3.model.S3Object;
-import com.tabiiki.gca.gcaingestion.facade.IS3Facade;
-import com.tabiiki.gca.gcaingestion.listener.SQSListener;
-import com.tabiiki.gca.gcaingestion.listener.SQSMessageClient;
-import com.tabiiki.gca.gcaingestion.publish.SNSPublisher;
+import com.tabiiki.gca.gcaingestion.facade.S3Facade;
+import com.tabiiki.gca.gcaingestion.listener.SQSLongPollingListener;
+import com.tabiiki.gca.gcaingestion.facade.SQSMessageClientFacade;
+import com.tabiiki.gca.gcaingestion.facade.SNSFacade;
 import com.tabiiki.gca.gcaingestion.service.IngestionService;
 import com.tabiiki.gca.gcaingestion.service.impl.IngestionServiceImpl;
 import com.tabiiki.gca.gcaingestion.util.SqsTestMessageBuilder;
@@ -24,14 +24,14 @@ import static org.mockito.Mockito.*;
 
 public class GcaIngestionComponentTest {
 
-    private final IS3Facade is3Facade = mock(IS3Facade.class);
+    private final S3Facade is3Facade = mock(S3Facade.class);
     private final SnsClient snsClient = mock(SnsClient.class);
-    private final SQSMessageClient sqsMessageClient = mock(SQSMessageClient.class);
+    private final SQSMessageClientFacade sqsMessageClientFacade = mock(SQSMessageClientFacade.class);
 
-    private final SNSPublisher snsPublisher = new SNSPublisher("fake", snsClient);
+    private final SNSFacade snsFacade = new SNSFacade("fake", snsClient);
 
-    private final IngestionService ingestionService = new IngestionServiceImpl(is3Facade, snsPublisher);
-    private final SQSListener sqsListener = new SQSListener(sqsMessageClient, ingestionService);
+    private final IngestionService ingestionService = new IngestionServiceImpl(is3Facade, snsFacade);
+    private final SQSLongPollingListener sqsLongPollingListener = new SQSLongPollingListener(sqsMessageClientFacade, ingestionService);
 
 
     @BeforeEach
@@ -54,16 +54,16 @@ public class GcaIngestionComponentTest {
                 ).build());
 
         when(is3Facade.get(anyString())).thenReturn(new S3Object());
-        when(sqsMessageClient.receive()).thenReturn(message);
-        CompletableFuture.runAsync(sqsListener::init);
+        when(sqsMessageClientFacade.receive()).thenReturn(message);
+        CompletableFuture.runAsync(sqsLongPollingListener::init);
 
         Thread.sleep(1000); //due to subscription / netty async
 
-        sqsListener.shutdown();
+        sqsLongPollingListener.shutdown();
 
         verify(is3Facade, atLeastOnce()).put(anyString(), anyString());
         verify(snsClient, atLeastOnce()).publish(any(PublishRequest.class));
-        verify(sqsMessageClient, atLeastOnce()).delete(any(Message.class));
+        verify(sqsMessageClientFacade, atLeastOnce()).delete(any(Message.class));
     }
 
 }

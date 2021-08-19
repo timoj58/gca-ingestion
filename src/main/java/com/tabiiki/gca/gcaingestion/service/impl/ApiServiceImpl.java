@@ -1,6 +1,6 @@
 package com.tabiiki.gca.gcaingestion.service.impl;
 
-import com.tabiiki.gca.gcaingestion.facade.IS3Facade;
+import com.tabiiki.gca.gcaingestion.facade.S3Facade;
 import com.tabiiki.gca.gcaingestion.service.ApiService;
 import com.tabiiki.gca.gcaingestion.util.S3ObjectConverter;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,7 @@ import java.util.UUID;
 @Service
 public class ApiServiceImpl implements ApiService {
 
-    private final IS3Facade s3Facade;
+    private final S3Facade s3Facade;
 
     @Override
     public String getFinalClaim(UUID id) {

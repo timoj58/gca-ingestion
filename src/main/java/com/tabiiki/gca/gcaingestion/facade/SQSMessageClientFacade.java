@@ -1,4 +1,4 @@
-package com.tabiiki.gca.gcaingestion.listener;
+package com.tabiiki.gca.gcaingestion.facade;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,13 +14,13 @@ import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Component
-public class SQSMessageClient {
+public class SQSMessageClientFacade {
 
     private final SqsAsyncClient sqsAsyncClient;
     private final String queueUrl;
 
     @Autowired
-    public SQSMessageClient(
+    public SQSMessageClientFacade(
             @Value("${aws.sqs.gca-ingestion-url}") String queueUrl,
             SqsAsyncClient sqsAsyncClient
     ) {

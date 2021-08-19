@@ -1,4 +1,4 @@
-package com.tabiiki.gca.gcaingestion.publish;
+package com.tabiiki.gca.gcaingestion.facade;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,13 +13,13 @@ import software.amazon.awssdk.services.sns.model.PublishResponse;
 
 @Slf4j
 @Component
-public class SNSPublisher {
+public class SNSFacade {
 
     private final SnsClient snsClient;
     private final String gcaIngestionTopic;
 
     @Autowired
-    public SNSPublisher(
+    public SNSFacade(
             @Value("${aws.sns.ingestion-topic}") String gcaIngestionTopic,
             SnsClient snsClient
     ) {

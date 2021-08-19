@@ -1,6 +1,7 @@
 package com.tabiiki.gca.gcaingestion.listener;
 
 import com.amazonaws.services.s3.event.S3EventNotification;
+import com.tabiiki.gca.gcaingestion.facade.SQSMessageClientFacade;
 import com.tabiiki.gca.gcaingestion.service.IngestionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,18 +17,18 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
 @Component
-public class SQSListener {
+public class SQSLongPollingListener {
 
-    private final SQSMessageClient sqsMessageClient;
+    private final SQSMessageClientFacade sqsMessageClientFacade;
     private final IngestionService ingestionService;
     private final AtomicBoolean repeater = new AtomicBoolean(true);
 
     @Autowired
-    public SQSListener(
-            SQSMessageClient sqsMessageClient,
+    public SQSLongPollingListener(
+            SQSMessageClientFacade sqsMessageClientFacade,
             IngestionService ingestionService
     ) {
-        this.sqsMessageClient = sqsMessageClient;
+        this.sqsMessageClientFacade = sqsMessageClientFacade;
         this.ingestionService = ingestionService;
     }
 
@@ -37,7 +38,7 @@ public class SQSListener {
         log.info("starting listener...");
 
         //do not listen to intellij hints, we need the supplier version as it wraps the response until subscription
-        Mono.fromFuture(() -> sqsMessageClient.receive())
+        Mono.fromFuture(() -> sqsMessageClientFacade.receive())
                 .repeat(repeater::get)
                 .retry()
                 .map(ReceiveMessageResponse::messages)
@@ -47,7 +48,7 @@ public class SQSListener {
                         Mono.just(
                                 S3EventNotification.parseJson(message.body())
                         ).doOnNext(ingestionService::ingest)
-                                .doFinally(delete -> sqsMessageClient.delete(message))
+                                .doFinally(delete -> sqsMessageClientFacade.delete(message))
                                 .subscribe()
                 );
     }
@@ -56,7 +57,7 @@ public class SQSListener {
     @PreDestroy
     public void shutdown() {
         log.info("shutdown hook...");
-        sqsMessageClient.close();
+        sqsMessageClientFacade.close();
         repeater.set(false);
     }
 }
