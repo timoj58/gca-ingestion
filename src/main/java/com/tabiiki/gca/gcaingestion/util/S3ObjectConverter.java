@@ -3,6 +3,8 @@ package com.tabiiki.gca.gcaingestion.util;
 import com.amazonaws.services.s3.model.S3Object;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.util.StreamUtils;
 
 import java.io.IOException;
@@ -20,5 +22,9 @@ public class S3ObjectConverter {
         }
 
         return "";
+    }
+
+    public Workbook convertExcel(S3Object s3Object) throws IOException {
+        return new XSSFWorkbook(s3Object.getObjectContent());
     }
 }
