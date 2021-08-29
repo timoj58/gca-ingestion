@@ -1,21 +1,21 @@
 package com.tabiiki.gca.gcaingestion.transform.epos;
 
-import com.tabiiki.gca.gcaingestion.exception.EposException;
 import com.tabiiki.gca.gcaingestion.model.epos.Epos;
 import com.tabiiki.gca.gcaingestion.model.epos.EposLine;
 import com.tabiiki.gca.gcaingestion.util.CellUtils;
+import com.tabiiki.gca.gcaingestion.util.TransformerExceptionHandler;
 import lombok.experimental.UtilityClass;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @UtilityClass
 public class EposTransformer {
 
-    public Epos transform(Workbook workbook) throws EposException {
-        List<EposLine> eposLines = new ArrayList<>();
+    public Epos transform(Workbook workbook, List<RuntimeException> exceptions) {
         Sheet sheet = workbook.getSheetAt(1);
 
         sheet.removeRow(sheet.getRow(0));
@@ -23,6 +23,18 @@ public class EposTransformer {
 
         var from = "";
         var to = "";
+        var eposLines = TransformerExceptionHandler.handle(exceptions::add, () -> transformLines(sheet));
+
+
+        return Epos.builder()
+                .from(from)
+                .to(to)
+                .eposLines(eposLines.map(m -> (List<EposLine>) m).orElseGet(Collections::emptyList))
+                .build();
+    }
+
+    private List<EposLine> transformLines(Sheet sheet) {
+        List<EposLine> eposLines = new ArrayList<>();
 
         sheet.forEach(
                 row -> {
@@ -46,10 +58,6 @@ public class EposTransformer {
                 }
         );
 
-        return Epos.builder()
-                .from(from)
-                .to(to)
-                .eposLines(eposLines)
-                .build();
+        return eposLines;
     }
 }

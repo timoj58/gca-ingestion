@@ -9,12 +9,13 @@ import java.util.function.Supplier;
 @UtilityClass
 public class TransformerExceptionHandler {
 
-    public Optional<Object> handle(Consumer<RuntimeException> exceptions,Supplier<Object> transform){
-        try{
+    public Optional<Object> handle(Consumer<RuntimeException> exceptions, Supplier<Object> transform) {
+        try {
             return Optional.of(transform.get());
-        }catch (RuntimeException e){
+        } catch (RuntimeException e) {
             exceptions.accept(e);
             return Optional.empty();
         }
-    };
+    }
+
 }

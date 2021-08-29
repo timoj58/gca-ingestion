@@ -10,7 +10,7 @@ import java.util.List;
 
 
 @UtilityClass
-public class OmittedProductTransformer{
+public class OmittedProductTransformer {
     public List<OmittedProduct> transform(Sheet sheet) throws OmittedProductsException {
         List<OmittedProduct> omittedProducts = new ArrayList<>();
         return omittedProducts;

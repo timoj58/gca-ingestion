@@ -36,6 +36,4 @@ public class Claim {
     private final FundingPaidByInvoice fundingPaidByInvoice;
     private final FundingPaidByProduct fundingPaidByProduct;
 
-    private final List<RuntimeException> exceptions;
-
 }

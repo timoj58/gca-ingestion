@@ -1,6 +1,9 @@
 package com.tabiiki.gca.gcaingestion.transform.claim;
 
-import com.tabiiki.gca.gcaingestion.exception.*;
+import com.tabiiki.gca.gcaingestion.exception.AuditorException;
+import com.tabiiki.gca.gcaingestion.exception.PromoException;
+import com.tabiiki.gca.gcaingestion.exception.RetailerException;
+import com.tabiiki.gca.gcaingestion.exception.SupplierException;
 import com.tabiiki.gca.gcaingestion.model.claim.Claim;
 import com.tabiiki.gca.gcaingestion.model.claim.OmittedProduct;
 import com.tabiiki.gca.gcaingestion.model.claim.Promo;
@@ -12,16 +15,13 @@ import lombok.experimental.UtilityClass;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 @UtilityClass
 public class ClaimTransformer {
 
-    public Claim transform(Workbook workbook) throws ClaimException {
-        List<RuntimeException> exceptions = new ArrayList<>();
+    public Claim transform(Workbook workbook, List<RuntimeException> exceptions) {
 
         Sheet sheet = workbook.getSheetAt(0);
 
@@ -33,12 +33,11 @@ public class ClaimTransformer {
         var rootCauseSummary = "";
         var claimDescription = "";
 
-        var promo = TransformerExceptionHandler.handle(exceptions::add, () ->transformPromo(sheet));
-        var supplier = TransformerExceptionHandler.handle(exceptions::add, () ->transformSupplier(sheet));
-        var auditor = TransformerExceptionHandler.handle(exceptions::add, () ->transformAuditor(sheet));
-        var retailer = TransformerExceptionHandler.handle(exceptions::add, () ->transformRetailer(sheet));
-        var omittedProducts = TransformerExceptionHandler.handle(exceptions::add, () ->OmittedProductTransformer.transform(sheet));
-
+        var promo = TransformerExceptionHandler.handle(exceptions::add, () -> transformPromo(sheet));
+        var supplier = TransformerExceptionHandler.handle(exceptions::add, () -> transformSupplier(sheet));
+        var auditor = TransformerExceptionHandler.handle(exceptions::add, () -> transformAuditor(sheet));
+        var retailer = TransformerExceptionHandler.handle(exceptions::add, () -> transformRetailer(sheet));
+        var omittedProducts = TransformerExceptionHandler.handle(exceptions::add, () -> OmittedProductTransformer.transform(sheet));
 
 
         return CalculationTransformer.transform(sheet)
@@ -50,12 +49,11 @@ public class ClaimTransformer {
                 .claimType(claimType)
                 .rootCauseSummary(rootCauseSummary)
                 .claimDescription(claimDescription)
-                .omittedProducts(omittedProducts.map(m -> (List<OmittedProduct>)m).orElseGet(() -> Collections.emptyList()))
-                .promo(promo.map(m -> (Promo)m).orElseGet(() -> Promo.builder().build()))
-                .retailer(retailer.map(m -> (Retailer)m).orElseGet(() -> Retailer.builder().build()))
-                .supplier(supplier.map(m -> (Supplier)m).orElseGet(() -> Supplier.builder().build()))
-                .auditor(auditor.map(m -> (Auditor)m).orElseGet(() -> Auditor.builder().build()))
-                .exceptions(exceptions)
+                .omittedProducts(omittedProducts.map(m -> (List<OmittedProduct>) m).orElseGet(Collections::emptyList))
+                .promo(promo.map(m -> (Promo) m).orElseGet(() -> Promo.builder().build()))
+                .retailer(retailer.map(m -> (Retailer) m).orElseGet(() -> Retailer.builder().build()))
+                .supplier(supplier.map(m -> (Supplier) m).orElseGet(() -> Supplier.builder().build()))
+                .auditor(auditor.map(m -> (Auditor) m).orElseGet(() -> Auditor.builder().build()))
                 .build();
     }
 
