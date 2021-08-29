@@ -10,8 +10,8 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class FundingDue {
-    private String totalFundingDue;
-    private String lessFundingClaimed;
-    private String claimTotal;
-    private List<FundingDue> fundingDues;
+    private final String totalFundingDue;
+    private final String lessFundingClaimed;
+    private final String claimTotal;
+    private final List<FundingDueLine> fundingDues;
 }

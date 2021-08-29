@@ -8,10 +8,10 @@ import lombok.Getter;
 @AllArgsConstructor
 @Builder
 public class FundingPaidByInvoiceLine {
-    private String invoiceNumber;
-    private String invoiceDate;
-    private String invoiceDescription;
-    private String netAmount;
-    private String vat;
-    private String gross;
+    private final String invoiceNumber;
+    private final String invoiceDate;
+    private final String invoiceDescription;
+    private final String netAmount;
+    private final String vat;
+    private final String gross;
 }

@@ -2,9 +2,9 @@ package com.tabiiki.gca.gcaingestion.component;
 
 import com.amazonaws.services.s3.model.S3Object;
 import com.tabiiki.gca.gcaingestion.facade.S3Facade;
-import com.tabiiki.gca.gcaingestion.listener.SQSLongPollingListener;
-import com.tabiiki.gca.gcaingestion.facade.SQSMessageClientFacade;
 import com.tabiiki.gca.gcaingestion.facade.SNSFacade;
+import com.tabiiki.gca.gcaingestion.facade.SQSMessageClientFacade;
+import com.tabiiki.gca.gcaingestion.listener.SQSLongPollingListener;
 import com.tabiiki.gca.gcaingestion.service.IngestionService;
 import com.tabiiki.gca.gcaingestion.service.impl.IngestionServiceImpl;
 import com.tabiiki.gca.gcaingestion.util.SqsTestMessageBuilder;
@@ -35,7 +35,7 @@ public class GcaIngestionComponentTest {
 
 
     @BeforeEach
-    public void init(){
+    public void init() {
 
         PublishResponse publishResponse = mock(PublishResponse.class);
         SdkHttpResponse sdkHttpResponse = mock(SdkHttpResponse.class);

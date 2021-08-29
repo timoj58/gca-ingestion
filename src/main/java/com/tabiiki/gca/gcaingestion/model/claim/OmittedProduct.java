@@ -9,9 +9,9 @@ import lombok.Getter;
 @Builder
 public class OmittedProduct {
 
-    private String productCode;
-    private String productDescription;
-    private String from;
-    private String to;
-    private String total;
+    private final String productCode;
+    private final String productDescription;
+    private final String from;
+    private final String to;
+    private final String total;
 }

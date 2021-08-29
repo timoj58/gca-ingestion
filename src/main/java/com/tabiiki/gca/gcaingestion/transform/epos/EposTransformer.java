@@ -20,6 +20,9 @@ public class EposTransformer {
         sheet.removeRow(sheet.getRow(0));
         sheet.removeRow(sheet.getRow(1));
 
+        var from = "";
+        var to = "";
+
         sheet.forEach(
                 row -> {
                     if (row.getCell(0) != null) {  //as poi doesnt get blank lines very well.  need to test all lines
@@ -43,6 +46,8 @@ public class EposTransformer {
         );
 
         return Epos.builder()
+                .from(from)
+                .to(to)
                 .eposLines(eposLines)
                 .build();
     }

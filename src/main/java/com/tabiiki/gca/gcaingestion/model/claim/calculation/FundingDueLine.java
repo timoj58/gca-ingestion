@@ -8,13 +8,13 @@ import lombok.Getter;
 @AllArgsConstructor
 @Builder
 public class FundingDueLine {
-    private String promoCode;
-    private String productDescription;
-    private String startDate;
-    private String endDate;
-    private String salesVolume;
-    private String fundingPerUnit;
-    private String totalFundingDue;
+    private final String promoCode;
+    private final String productDescription;
+    private final String startDate;
+    private final String endDate;
+    private final String salesVolume;
+    private final String fundingPerUnit;
+    private final String totalFundingDue;
 
 
 }

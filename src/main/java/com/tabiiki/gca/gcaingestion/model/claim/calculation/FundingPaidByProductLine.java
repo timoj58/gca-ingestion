@@ -8,11 +8,11 @@ import lombok.Getter;
 @AllArgsConstructor
 @Builder
 public class FundingPaidByProductLine {
-    private String productCode;
-    private String productDescription;
-    private String startDate;
-    private String endDate;
-    private String salesVolume;
-    private String fundingPerUnit;
-    private String totalFundingPaid;
+    private final String productCode;
+    private final String productDescription;
+    private final String startDate;
+    private final String endDate;
+    private final String salesVolume;
+    private final String fundingPerUnit;
+    private final String totalFundingPaid;
 }
