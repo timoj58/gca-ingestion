@@ -1,5 +1,6 @@
 package com.tabiiki.gca.gcaingestion.transform.calculation;
 
+import com.tabiiki.gca.gcaingestion.exception.FundingPaidByInvoiceException;
 import com.tabiiki.gca.gcaingestion.model.claim.calculation.FundingPaidByInvoice;
 import com.tabiiki.gca.gcaingestion.model.claim.calculation.FundingPaidByInvoiceLine;
 import lombok.experimental.UtilityClass;
@@ -11,7 +12,7 @@ import java.util.List;
 @UtilityClass
 public class FundingPaidByInvoiceTransformer {
 
-    public FundingPaidByInvoice transform(Sheet sheet) {
+    public FundingPaidByInvoice transform(Sheet sheet) throws FundingPaidByInvoiceException {
         List<FundingPaidByInvoiceLine> fundingPaidByInvoiceLines = new ArrayList<>();
 
         var total = "";

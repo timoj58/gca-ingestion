@@ -1,5 +1,6 @@
 package com.tabiiki.gca.gcaingestion.transform.epos;
 
+import com.tabiiki.gca.gcaingestion.exception.EposException;
 import com.tabiiki.gca.gcaingestion.model.epos.Epos;
 import com.tabiiki.gca.gcaingestion.model.epos.EposLine;
 import com.tabiiki.gca.gcaingestion.util.CellUtils;
@@ -13,7 +14,7 @@ import java.util.List;
 @UtilityClass
 public class EposTransformer {
 
-    public Epos transform(Workbook workbook) {
+    public Epos transform(Workbook workbook) throws EposException {
         List<EposLine> eposLines = new ArrayList<>();
         Sheet sheet = workbook.getSheetAt(1);
 

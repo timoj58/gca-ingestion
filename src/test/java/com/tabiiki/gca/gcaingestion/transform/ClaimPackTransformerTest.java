@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
 class ClaimPackTransformerTest {
 
     @Test
@@ -18,6 +20,19 @@ class ClaimPackTransformerTest {
         Workbook workbook = new XSSFWorkbook(file);
 
         var claimPack = ClaimPackTransformer.transform(workbook);
+        //need to check all the fields.  (to save messing up later).
+        assertFalse(claimPack.getClaim().getFundingDue().getFundingDues().isEmpty());
+        assertFalse(claimPack.getClaim().getFundingPaidByInvoice().getFundingPaidByInvoiceLines().isEmpty());
+        assertFalse(claimPack.getClaim().getFundingPaidByProduct().getFundingPaidByProductLines().isEmpty());
+        assertFalse(claimPack.getEpos().getEposLines().isEmpty());
+        assertFalse(claimPack.getClaim().getOmittedProducts().isEmpty());
+        //now need to do all the fields as well
+        //claim
+        //supplier
+        //promo
+        //auditor
+        //retailer
+        //and then fields in epos, calcs etc
 
     }
 
