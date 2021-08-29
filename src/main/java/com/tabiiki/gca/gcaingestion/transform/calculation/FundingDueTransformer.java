@@ -12,17 +12,21 @@ import java.util.List;
 @UtilityClass
 public class FundingDueTransformer {
     public FundingDue transform(Sheet sheet) throws FundingDueException {
-        List<FundingDueLine> fundingDueLines = new ArrayList<>();
+        try {
+            List<FundingDueLine> fundingDueLines = new ArrayList<>();
+      
+            var claimTotal = "";
+            var lessFundingClaimed = "";
+            var totalFundingsDue = "";
 
-        var claimTotal = "";
-        var lessFundingClaimed = "";
-        var totalFundingsDue = "";
-
-        return FundingDue.builder()
-                .claimTotal(claimTotal)
-                .lessFundingClaimed(lessFundingClaimed)
-                .totalFundingDue(totalFundingsDue)
-                .fundingDues(fundingDueLines)
-                .build();
+            return FundingDue.builder()
+                    .claimTotal(claimTotal)
+                    .lessFundingClaimed(lessFundingClaimed)
+                    .totalFundingDue(totalFundingsDue)
+                    .fundingDues(fundingDueLines)
+                    .build();
+        } catch (Exception e) {
+            throw new FundingDueException();
+        }
     }
 }

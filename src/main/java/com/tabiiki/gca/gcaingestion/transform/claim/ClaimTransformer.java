@@ -10,7 +10,7 @@ import com.tabiiki.gca.gcaingestion.model.claim.Promo;
 import com.tabiiki.gca.gcaingestion.model.claim.actor.Auditor;
 import com.tabiiki.gca.gcaingestion.model.claim.actor.Retailer;
 import com.tabiiki.gca.gcaingestion.model.claim.actor.Supplier;
-import com.tabiiki.gca.gcaingestion.util.TransformerExceptionHandler;
+import com.tabiiki.gca.gcaingestion.util.TransformExceptionHandler;
 import lombok.experimental.UtilityClass;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -33,14 +33,14 @@ public class ClaimTransformer {
         var rootCauseSummary = "";
         var claimDescription = "";
 
-        var promo = TransformerExceptionHandler.handle(exceptions::add, () -> transformPromo(sheet));
-        var supplier = TransformerExceptionHandler.handle(exceptions::add, () -> transformSupplier(sheet));
-        var auditor = TransformerExceptionHandler.handle(exceptions::add, () -> transformAuditor(sheet));
-        var retailer = TransformerExceptionHandler.handle(exceptions::add, () -> transformRetailer(sheet));
-        var omittedProducts = TransformerExceptionHandler.handle(exceptions::add, () -> OmittedProductTransformer.transform(sheet));
+        var promo = TransformExceptionHandler.handle(exceptions::add, () -> transformPromo(sheet));
+        var supplier = TransformExceptionHandler.handle(exceptions::add, () -> transformSupplier(sheet));
+        var auditor = TransformExceptionHandler.handle(exceptions::add, () -> transformAuditor(sheet));
+        var retailer = TransformExceptionHandler.handle(exceptions::add, () -> transformRetailer(sheet));
+        var omittedProducts = TransformExceptionHandler.handle(exceptions::add, () -> OmittedProductTransformer.transform(sheet));
 
 
-        return CalculationTransformer.transform(sheet)
+        return CalculationTransformer.transform(sheet, exceptions)
                 .toBuilder()
                 .claimIdentificationDate(claimIdentificationDate)
                 .claimNumber(claimNumber)
@@ -58,19 +58,36 @@ public class ClaimTransformer {
     }
 
     private Promo transformPromo(Sheet sheet) throws PromoException {
-        return Promo.builder().build();
+        try {
+            return Promo.builder().build();
+        } catch (Exception e) {
+            throw new PromoException();
+        }
     }
 
     private Supplier transformSupplier(Sheet sheet) throws SupplierException {
-        return Supplier.builder().build();
+        try {
+            return Supplier.builder().build();
+
+        } catch (Exception e) {
+            throw new SupplierException();
+        }
     }
 
     private Auditor transformAuditor(Sheet sheet) throws AuditorException {
-        return Auditor.builder().build();
+        try {
+            return Auditor.builder().build();
+        } catch (Exception e) {
+            throw new AuditorException();
+        }
     }
 
     private Retailer transformRetailer(Sheet sheet) throws RetailerException {
-        return Retailer.builder().build();
+        try {
+            return Retailer.builder().build();
+        } catch (Exception e) {
+            throw new RetailerException();
+        }
     }
 
 }

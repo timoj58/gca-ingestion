@@ -12,13 +12,17 @@ import java.util.List;
 @UtilityClass
 public class FundingPaidByProductTransformer {
     public FundingPaidByProduct transform(Sheet sheet) throws FundingPaidByProductException {
-        List<FundingPaidByProductLine> fundingPaidByProductLines = new ArrayList<>();
+        try {
+            List<FundingPaidByProductLine> fundingPaidByProductLines = new ArrayList<>();
 
-        var total = "";
+            var total = "";
 
-        return FundingPaidByProduct.builder()
-                .total(total)
-                .fundingPaidByProductLines(fundingPaidByProductLines)
-                .build();
+            return FundingPaidByProduct.builder()
+                    .total(total)
+                    .fundingPaidByProductLines(fundingPaidByProductLines)
+                    .build();
+        } catch (Exception e) {
+            throw new FundingPaidByProductException();
+        }
     }
 }

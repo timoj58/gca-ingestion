@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 @UtilityClass
-public class TransformerExceptionHandler {
+public class TransformExceptionHandler {
 
     public Optional<Object> handle(Consumer<RuntimeException> exceptions, Supplier<Object> transform) {
         try {

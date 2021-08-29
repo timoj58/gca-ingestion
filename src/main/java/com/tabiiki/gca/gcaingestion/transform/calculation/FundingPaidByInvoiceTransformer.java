@@ -13,13 +13,17 @@ import java.util.List;
 public class FundingPaidByInvoiceTransformer {
 
     public FundingPaidByInvoice transform(Sheet sheet) throws FundingPaidByInvoiceException {
-        List<FundingPaidByInvoiceLine> fundingPaidByInvoiceLines = new ArrayList<>();
+        try {
+            List<FundingPaidByInvoiceLine> fundingPaidByInvoiceLines = new ArrayList<>();
 
-        var total = "";
+            var total = "";
 
-        return FundingPaidByInvoice.builder()
-                .total(total)
-                .fundingPaidByInvoiceLines(fundingPaidByInvoiceLines)
-                .build();
+            return FundingPaidByInvoice.builder()
+                    .total(total)
+                    .fundingPaidByInvoiceLines(fundingPaidByInvoiceLines)
+                    .build();
+        } catch (Exception e) {
+            throw new FundingPaidByInvoiceException();
+        }
     }
 }
