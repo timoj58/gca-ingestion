@@ -4,7 +4,6 @@ import com.tabiiki.gca.gcaingestion.model.claim.actor.Auditor;
 import com.tabiiki.gca.gcaingestion.model.claim.actor.Retailer;
 import com.tabiiki.gca.gcaingestion.model.claim.actor.Supplier;
 import com.tabiiki.gca.gcaingestion.model.claim.calculation.FundingDue;
-import com.tabiiki.gca.gcaingestion.model.claim.calculation.FundingDueLine;
 import com.tabiiki.gca.gcaingestion.model.claim.calculation.FundingPaidByInvoice;
 import com.tabiiki.gca.gcaingestion.model.claim.calculation.FundingPaidByProduct;
 import lombok.AllArgsConstructor;
@@ -15,26 +14,26 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 public class Claim {
 
-    private String claimIdentificationDate;
-    private String claimNumber;
-    private String claimAmount;
-    private String claimCurrency;
-    private String claimType;
-    private String rootCauseSummary;
-    private String claimDescription;
+    private final String claimIdentificationDate;
+    private final String claimNumber;
+    private final String claimAmount;
+    private final String claimCurrency;
+    private final String claimType;
+    private final String rootCauseSummary;
+    private final String claimDescription;
 
-    private List<OmittedProduct> omittedProducts;
+    private final List<OmittedProduct> omittedProducts;
 
-    private Promo promo;
-    private Retailer retailer;
-    private Supplier supplier;
-    private Auditor auditor;
+    private final Promo promo;
+    private final Retailer retailer;
+    private final Supplier supplier;
+    private final Auditor auditor;
 
-    private FundingDue fundingDue;
-    private FundingPaidByInvoice fundingPaidByInvoice;
-    private FundingPaidByProduct fundingPaidByProduct;
+    private final FundingDue fundingDue;
+    private final FundingPaidByInvoice fundingPaidByInvoice;
+    private final FundingPaidByProduct fundingPaidByProduct;
 
 }

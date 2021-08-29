@@ -8,7 +8,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Builder
 public class Promo {
-    private String promoStartDate;
-    private String promoEndDate;
-    private String promoDiscountName;
+    private final String promoStartDate;
+    private final String promoEndDate;
+    private final String promoDiscountName;
 }

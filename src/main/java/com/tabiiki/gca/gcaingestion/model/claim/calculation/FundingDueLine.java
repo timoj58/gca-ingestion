@@ -1,7 +1,12 @@
 package com.tabiiki.gca.gcaingestion.model.claim.calculation;
 
-import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 
+@Getter
+@AllArgsConstructor
+@Builder
 public class FundingDueLine {
     private String promoCode;
     private String productDescription;
@@ -12,7 +17,4 @@ public class FundingDueLine {
     private String totalFundingDue;
 
 
-
-
-
- }
+}

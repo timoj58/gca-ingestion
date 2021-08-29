@@ -2,9 +2,9 @@ package com.tabiiki.gca.gcaingestion.service.impl;
 
 import com.amazonaws.services.s3.event.S3EventNotification;
 import com.tabiiki.gca.gcaingestion.facade.S3Facade;
+import com.tabiiki.gca.gcaingestion.facade.SNSFacade;
 import com.tabiiki.gca.gcaingestion.message.IngestionMessage;
 import com.tabiiki.gca.gcaingestion.message.IngestionStatus;
-import com.tabiiki.gca.gcaingestion.facade.SNSFacade;
 import com.tabiiki.gca.gcaingestion.service.IngestionService;
 import com.tabiiki.gca.gcaingestion.util.S3ObjectConverter;
 import lombok.RequiredArgsConstructor;

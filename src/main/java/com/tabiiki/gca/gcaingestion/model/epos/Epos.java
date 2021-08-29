@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class Epos {
-    private String from;
-    private String to;
-    private List<EposLine> eposLines;
+    private final String from;
+    private final String to;
+    private final List<EposLine> eposLines;
 }

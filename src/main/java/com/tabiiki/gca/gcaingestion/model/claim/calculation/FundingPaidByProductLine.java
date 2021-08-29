@@ -1,5 +1,12 @@
 package com.tabiiki.gca.gcaingestion.model.claim.calculation;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
+@Builder
 public class FundingPaidByProductLine {
     private String productCode;
     private String productDescription;

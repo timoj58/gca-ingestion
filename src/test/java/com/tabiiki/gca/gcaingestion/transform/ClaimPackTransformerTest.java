@@ -17,7 +17,7 @@ class ClaimPackTransformerTest {
         FileInputStream file = new FileInputStream(new File("src/test/resources/perfect_claim.xlsx"));
         Workbook workbook = new XSSFWorkbook(file);
 
-        ClaimPackTransformer.transform(workbook);
+        var claimPack = ClaimPackTransformer.transform(workbook);
 
     }
 

@@ -8,17 +8,17 @@ import lombok.Getter;
 @AllArgsConstructor
 @Builder
 public class EposLine {
-    private String supplierNumber;
-    private String supplierName;
-    private String productCode;
-    private String productDescription;
-    private String date;
-    private String totalUnitsSold;
-    private String salesIncVat;
-    private String salesExVat;
-    private String averageSellingPrice;
-    private String returnedUnits;
-    private String returnsIncVat;
-    private String returnsExVat;
-    private String returnsAverageSellingPrice;
+    private final String supplierNumber;
+    private final String supplierName;
+    private final String productCode;
+    private final String productDescription;
+    private final String date;
+    private final String totalUnitsSold;
+    private final String salesIncVat;
+    private final String salesExVat;
+    private final String averageSellingPrice;
+    private final String returnedUnits;
+    private final String returnsIncVat;
+    private final String returnsExVat;
+    private final String returnsAverageSellingPrice;
 }
