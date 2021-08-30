@@ -1,7 +1,9 @@
 package com.tabiiki.gca.gcaingestion.transform.claim;
 
+import com.tabiiki.gca.gcaingestion.exception.ClaimHeaderException;
 import com.tabiiki.gca.gcaingestion.exception.SupplierException;
 import com.tabiiki.gca.gcaingestion.model.claim.actor.Supplier;
+import com.tabiiki.gca.gcaingestion.util.CellUtils;
 import com.tabiiki.gca.gcaingestion.util.TransformExceptionHandler;
 import lombok.experimental.UtilityClass;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -30,42 +32,22 @@ public class SupplierTransformer {
     }
 
     private String transformSupplierName(Sheet sheet) throws SupplierException {
-        try {
-            return "";
-        } catch (Exception e) {
-            throw new SupplierException("supplierName");
-        }
+        return CellUtils.search(sheet, "Supplier Name", new ClaimHeaderException("supplierName"));
     }
 
     private String transformSupplierContactEmail(Sheet sheet) throws SupplierException {
-        try {
-            return "";
-        } catch (Exception e) {
-            throw new SupplierException("supplierContactEmail");
-        }
+        return CellUtils.search(sheet, "Supplier Contact Email", new ClaimHeaderException("supplierContactEmail"));
     }
 
     private String transformSupplierContactName(Sheet sheet) throws SupplierException {
-        try {
-            return "";
-        } catch (Exception e) {
-            throw new SupplierException("supplierContactName");
-        }
+        return CellUtils.search(sheet, "Supplier Contact Name", new ClaimHeaderException("supplierContactName"));
     }
 
     private String transformSupplierContactPhone(Sheet sheet) throws SupplierException {
-        try {
-            return "";
-        } catch (Exception e) {
-            throw new SupplierException("supplierContactPhone");
-        }
+        return CellUtils.search(sheet, "Supplier Contact Phone", new ClaimHeaderException("supplierContactPhone"));
     }
 
     private String transformSupplierAccountNumber(Sheet sheet) throws SupplierException {
-        try {
-            return "";
-        } catch (Exception e) {
-            throw new SupplierException("supplierAccountNumber");
-        }
+        return CellUtils.search(sheet, "Supplier Account Number", new ClaimHeaderException("supplierAccountNumber"));
     }
 }

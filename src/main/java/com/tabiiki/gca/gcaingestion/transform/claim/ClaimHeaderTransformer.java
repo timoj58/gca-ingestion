@@ -2,6 +2,7 @@ package com.tabiiki.gca.gcaingestion.transform.claim;
 
 import com.tabiiki.gca.gcaingestion.exception.ClaimHeaderException;
 import com.tabiiki.gca.gcaingestion.model.claim.ClaimHeader;
+import com.tabiiki.gca.gcaingestion.util.CellUtils;
 import com.tabiiki.gca.gcaingestion.util.TransformExceptionHandler;
 import lombok.experimental.UtilityClass;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -33,58 +34,30 @@ public class ClaimHeaderTransformer {
     }
 
     private String transformClaimIdentificationDate(Sheet sheet) throws ClaimHeaderException {
-        try {
-            return "";
-        } catch (Exception e) {
-            throw new ClaimHeaderException("claimIdentificationDate");
-        }
+        return CellUtils.search(sheet, "Claim Identification Date", new ClaimHeaderException("claimIdentificationDate"));
     }
 
     private String transformClaimNumber(Sheet sheet) throws ClaimHeaderException {
-        try {
-            return "";
-        } catch (Exception e) {
-            throw new ClaimHeaderException("claimNumber");
-        }
+        return CellUtils.search(sheet, "Claim Number", new ClaimHeaderException("claimNumber"));
     }
 
     private String transformClaimAmount(Sheet sheet) throws ClaimHeaderException {
-        try {
-            return "";
-        } catch (Exception e) {
-            throw new ClaimHeaderException("claimAmount");
-        }
+        return CellUtils.search(sheet, "Claim Amount", new ClaimHeaderException("claimAmount"));
     }
 
     private String transformClaimCurrency(Sheet sheet) throws ClaimHeaderException {
-        try {
-            return "";
-        } catch (Exception e) {
-            throw new ClaimHeaderException("claimCurrency");
-        }
+        return CellUtils.search(sheet, "Claim Currency", new ClaimHeaderException("claimCurrency"));
     }
 
     private String transformClaimType(Sheet sheet) throws ClaimHeaderException {
-        try {
-            return "";
-        } catch (Exception e) {
-            throw new ClaimHeaderException("claimType");
-        }
+        return CellUtils.search(sheet, "Claim Type", new ClaimHeaderException("claimType"));
     }
 
     private String transformRootCause(Sheet sheet) throws ClaimHeaderException {
-        try {
-            return "";
-        } catch (Exception e) {
-            throw new ClaimHeaderException("rootCauseSummary");
-        }
+        return CellUtils.search(sheet, "Root Cause Summary", new ClaimHeaderException("rootCauseSummary"));
     }
 
     private String transformClaimDescription(Sheet sheet) throws ClaimHeaderException {
-        try {
-            return "";
-        } catch (Exception e) {
-            throw new ClaimHeaderException("claimDescription");
-        }
+        return CellUtils.search(sheet, "Claim Description/Explanation", new ClaimHeaderException("claimDescription"));
     }
 }

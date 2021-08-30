@@ -8,7 +8,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Builder
 public class FundingDueLine {
-    private final String promoCode;
+    private final String productCode;
     private final String productDescription;
     private final String startDate;
     private final String endDate;

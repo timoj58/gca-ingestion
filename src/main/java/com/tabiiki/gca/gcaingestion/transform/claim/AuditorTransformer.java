@@ -1,7 +1,9 @@
 package com.tabiiki.gca.gcaingestion.transform.claim;
 
 import com.tabiiki.gca.gcaingestion.exception.AuditorException;
+import com.tabiiki.gca.gcaingestion.exception.ClaimHeaderException;
 import com.tabiiki.gca.gcaingestion.model.claim.actor.Auditor;
+import com.tabiiki.gca.gcaingestion.util.CellUtils;
 import com.tabiiki.gca.gcaingestion.util.TransformExceptionHandler;
 import lombok.experimental.UtilityClass;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -27,34 +29,18 @@ public class AuditorTransformer {
     }
 
     private String transformAuditorCompany(Sheet sheet) throws AuditorException {
-        try {
-            return "";
-        } catch (Exception e) {
-            throw new AuditorException("auditCompany");
-        }
+        return CellUtils.search(sheet, "Audit Company", new ClaimHeaderException("auditCompany"));
     }
 
     private String transformAuditorName(Sheet sheet) throws AuditorException {
-        try {
-            return "";
-        } catch (Exception e) {
-            throw new AuditorException("auditorName");
-        }
+        return CellUtils.search(sheet, "Auditor Name", new ClaimHeaderException("auditorName"));
     }
 
     private String transformAuditorEmail(Sheet sheet) throws AuditorException {
-        try {
-            return "";
-        } catch (Exception e) {
-            throw new AuditorException("auditorEmail");
-        }
+        return CellUtils.search(sheet, "Auditor Email", new ClaimHeaderException("auditorEmail"));
     }
 
     private String transformAuditorPhone(Sheet sheet) throws AuditorException {
-        try {
-            return "";
-        } catch (Exception e) {
-            throw new AuditorException("auditorPhone");
-        }
+        return CellUtils.search(sheet, "Auditor Phone", new ClaimHeaderException("auditorPhone"));
     }
 }

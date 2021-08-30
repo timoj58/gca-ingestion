@@ -21,11 +21,11 @@ class ClaimPackTransformerTest {
 
         var claimPack = ClaimPackTransformer.transform(workbook, "testing");
         //need to check all the fields.  (to save messing up later).
+        assertFalse(claimPack.getEpos().getEposLines().isEmpty());
+        assertFalse(claimPack.getClaim().getOmittedProducts().isEmpty());
         assertFalse(claimPack.getClaim().getFundingDue().getFundingDues().isEmpty());
         assertFalse(claimPack.getClaim().getFundingPaidByInvoice().getFundingPaidByInvoiceLines().isEmpty());
         assertFalse(claimPack.getClaim().getFundingPaidByProduct().getFundingPaidByProductLines().isEmpty());
-        assertFalse(claimPack.getEpos().getEposLines().isEmpty());
-        assertFalse(claimPack.getClaim().getOmittedProducts().isEmpty());
         //now need to do all the fields as well
         //claim
         //supplier

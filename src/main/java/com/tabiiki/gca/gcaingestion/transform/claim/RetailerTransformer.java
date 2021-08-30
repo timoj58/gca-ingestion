@@ -1,7 +1,9 @@
 package com.tabiiki.gca.gcaingestion.transform.claim;
 
+import com.tabiiki.gca.gcaingestion.exception.ClaimHeaderException;
 import com.tabiiki.gca.gcaingestion.exception.RetailerException;
 import com.tabiiki.gca.gcaingestion.model.claim.actor.Retailer;
+import com.tabiiki.gca.gcaingestion.util.CellUtils;
 import com.tabiiki.gca.gcaingestion.util.TransformExceptionHandler;
 import lombok.experimental.UtilityClass;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -21,18 +23,10 @@ public class RetailerTransformer {
     }
 
     private String transformRetailerName(Sheet sheet) throws RetailerException {
-        try {
-            return "";
-        } catch (Exception e) {
-            throw new RetailerException("retailerName");
-        }
+        return CellUtils.search(sheet, "Retailer Name", new ClaimHeaderException("retailerName"));
     }
 
     private String transformRetailerFinancialYear(Sheet sheet) throws RetailerException {
-        try {
-            return "";
-        } catch (Exception e) {
-            throw new RetailerException("retailerFinancialYear");
-        }
+        return CellUtils.search(sheet, "Retailer Financial Year", new ClaimHeaderException("retailerFinancialYear"));
     }
 }

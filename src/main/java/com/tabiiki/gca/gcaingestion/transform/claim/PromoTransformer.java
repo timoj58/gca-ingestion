@@ -1,7 +1,9 @@
 package com.tabiiki.gca.gcaingestion.transform.claim;
 
+import com.tabiiki.gca.gcaingestion.exception.ClaimHeaderException;
 import com.tabiiki.gca.gcaingestion.exception.PromoException;
 import com.tabiiki.gca.gcaingestion.model.claim.Promo;
+import com.tabiiki.gca.gcaingestion.util.CellUtils;
 import com.tabiiki.gca.gcaingestion.util.TransformExceptionHandler;
 import lombok.experimental.UtilityClass;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -24,26 +26,14 @@ public class PromoTransformer {
     }
 
     private String transformPromoStartDate(Sheet sheet) throws PromoException {
-        try {
-            return "";
-        } catch (Exception e) {
-            throw new PromoException("promoStartDate");
-        }
+        return CellUtils.search(sheet, "Promo Start date", new ClaimHeaderException("promoStartDate"));
     }
 
     private String transformPromoEndDate(Sheet sheet) throws PromoException {
-        try {
-            return "";
-        } catch (Exception e) {
-            throw new PromoException("promoEndDate");
-        }
+        return CellUtils.search(sheet, "Promo End date", new ClaimHeaderException("promoEndDate"));
     }
 
     private String transformPromoDiscountName(Sheet sheet) throws PromoException {
-        try {
-            return "";
-        } catch (Exception e) {
-            throw new PromoException("promoDiscountName");
-        }
+        return CellUtils.search(sheet, "Promo Discount Name", new ClaimHeaderException("promoDiscountName"));
     }
 }
