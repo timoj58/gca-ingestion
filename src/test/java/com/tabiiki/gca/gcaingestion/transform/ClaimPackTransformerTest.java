@@ -19,7 +19,7 @@ class ClaimPackTransformerTest {
         FileInputStream file = new FileInputStream(new File("src/test/resources/perfect_claim.xlsx"));
         Workbook workbook = new XSSFWorkbook(file);
 
-        var claimPack = ClaimPackTransformer.transform(workbook);
+        var claimPack = ClaimPackTransformer.transform(workbook, "testing");
         //need to check all the fields.  (to save messing up later).
         assertFalse(claimPack.getClaim().getFundingDue().getFundingDues().isEmpty());
         assertFalse(claimPack.getClaim().getFundingPaidByInvoice().getFundingPaidByInvoiceLines().isEmpty());

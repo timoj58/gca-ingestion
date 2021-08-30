@@ -17,14 +17,7 @@ import java.util.List;
 @Builder(toBuilder = true)
 public class Claim {
 
-    private final String claimIdentificationDate;
-    private final String claimNumber;
-    private final String claimAmount;
-    private final String claimCurrency;
-    private final String claimType;
-    private final String rootCauseSummary;
-    private final String claimDescription;
-
+    private final ClaimHeader claimHeader;
     private final List<OmittedProduct> omittedProducts;
 
     private final Promo promo;

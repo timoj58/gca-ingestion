@@ -10,7 +10,7 @@ import lombok.Getter;
 public class Supplier {
 
     private final String supplierName;
-    private final String SupplierAccountNumber;
+    private final String supplierAccountNumber;
     private final String supplierContactName;
     private final String supplierContactEmail;
     private final String supplierContactPhone;
