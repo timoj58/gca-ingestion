@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @AllArgsConstructor
@@ -15,4 +16,9 @@ public class ClaimPack {
     private final Claim claim;
     private final Epos epos;
     private final List<RuntimeException> exceptions;
+
+    public List<String> getExceptions() {
+        return exceptions.stream().map(Throwable::getMessage).collect(Collectors.toList());
+    }
+
 }

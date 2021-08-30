@@ -85,9 +85,9 @@ public class FundingDueTransformer {
                                             exceptions, key, row.getRowNum(), "startDate")
                                             .map(m -> (String) m).orElse("")
                             )
-                            .startDate(
+                            .endDate(
                                     transformCell(() -> CellUtils.getValue(row.getCell(3)),
-                                            exceptions, key, row.getRowNum(), "startDate")
+                                            exceptions, key, row.getRowNum(), "endDate")
                                             .map(m -> (String) m).orElse("")
                             )
                             .salesVolume(

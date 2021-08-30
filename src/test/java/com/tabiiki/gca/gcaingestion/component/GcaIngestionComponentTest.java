@@ -9,6 +9,7 @@ import com.tabiiki.gca.gcaingestion.service.IngestionService;
 import com.tabiiki.gca.gcaingestion.service.impl.IngestionServiceImpl;
 import com.tabiiki.gca.gcaingestion.util.SqsTestMessageBuilder;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import software.amazon.awssdk.http.SdkHttpResponse;
 import software.amazon.awssdk.services.sns.SnsClient;
@@ -22,6 +23,7 @@ import java.util.concurrent.CompletableFuture;
 
 import static org.mockito.Mockito.*;
 
+@Disabled
 public class GcaIngestionComponentTest {
 
     private final S3Facade is3Facade = mock(S3Facade.class);
