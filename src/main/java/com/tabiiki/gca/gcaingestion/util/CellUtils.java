@@ -48,7 +48,7 @@ public class CellUtils {
             for (Row row : sheet) {
                 for (Cell cell : row) {
                     if (getValue(cell).trim().equalsIgnoreCase(key)) {
-                       return cell;
+                        return cell;
                     }
                 }
             }

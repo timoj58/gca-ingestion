@@ -18,44 +18,43 @@ import java.util.function.Supplier;
 public class FundingDueTransformer {
     public FundingDue transform(Sheet sheet, List<RuntimeException> exceptions, String key) {
 
-        var claimTotal = TransformExceptionHandler.handle(exceptions::add, () -> transformClaimTotal(sheet), key);
-        var lessFundingClaimed = TransformExceptionHandler.handle(exceptions::add, () -> transformLessFundingClaimed(sheet), key);
-        var totalFundingDue = TransformExceptionHandler.handle(exceptions::add, () -> transformTotalFundingDue(sheet), key);
-
         return FundingDue.builder()
-                .claimTotal(claimTotal.map(m -> (String) m).orElse(""))
-                .lessFundingClaimed(lessFundingClaimed.map(m -> (String) m).orElse(""))
-                .totalFundingDue(totalFundingDue.map(m -> (String) m).orElse(""))
+                .claimTotal(transformClaimTotal(sheet, exceptions, key))
+                .lessFundingClaimed(transformLessFundingClaimed(sheet, exceptions, key))
+                .totalFundingDue(transformTotalFundingDue(sheet, exceptions, key))
                 .fundingDues(transformLines(sheet, exceptions, key))
                 .build();
 
     }
 
 
-    private String transformClaimTotal(Sheet sheet) throws FundingDueException {
-        try {
-            return "";
-        } catch (Exception e) {
-            throw new FundingDueException("claimTotal");
-        }
+    private String transformClaimTotal(Sheet sheet, List<RuntimeException> exceptions, String key) {
+        var endCell = CellUtils.locate(sheet, "Funding Paid by invoice", new FundingDueException("failed to locate table"));
+        var row = sheet.getRow(endCell.getRowIndex() - 1);
+
+        return transformCell(() -> CellUtils.getValue(row.getCell(6)),
+                exceptions, key, row.getRowNum(), "claimTotal")
+                .map(m -> (String) m).orElse("");
     }
 
 
-    private String transformLessFundingClaimed(Sheet sheet) throws FundingDueException {
-        try {
-            return "";
-        } catch (Exception e) {
-            throw new FundingDueException("lessFundingClaimed");
-        }
+    private String transformLessFundingClaimed(Sheet sheet, List<RuntimeException> exceptions, String key) {
+        var endCell = CellUtils.locate(sheet, "Funding Paid by invoice", new FundingDueException("failed to locate table"));
+        var row = sheet.getRow(endCell.getRowIndex() - 3);
+
+        return transformCell(() -> CellUtils.getValue(row.getCell(6)),
+                exceptions, key, row.getRowNum(), "lessFundingClaimed")
+                .map(m -> (String) m).orElse("");
     }
 
 
-    private String transformTotalFundingDue(Sheet sheet) throws FundingDueException {
-        try {
-            return "";
-        } catch (Exception e) {
-            throw new FundingDueException("totalFundingDue");
-        }
+    private String transformTotalFundingDue(Sheet sheet, List<RuntimeException> exceptions, String key) {
+        var endCell = CellUtils.locate(sheet, "Funding Paid by invoice", new FundingDueException("failed to locate table"));
+        var row = sheet.getRow(endCell.getRowIndex() - 5);
+
+        return transformCell(() -> CellUtils.getValue(row.getCell(6)),
+                exceptions, key, row.getRowNum(), "totalFundingDue")
+                .map(m -> (String) m).orElse("");
     }
 
     private List<FundingDueLine> transformLines(Sheet sheet, List<RuntimeException> exceptions, String key) {

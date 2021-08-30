@@ -10,7 +10,10 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class FundingPaidByInvoice {
-    private final String total;
+    private final String totalNet;
+    private final String totalVat;
+    private final String totalGross;
+
     private final List<FundingPaidByInvoiceLine> fundingPaidByInvoiceLines;
 
 }
