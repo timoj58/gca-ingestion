@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
@@ -34,8 +35,8 @@ public class IngestionServiceImpl implements IngestionService {
     public void ingest(S3EventNotification event) {
         log.info("ingesting {}", event.toJson());
 
-        event.getRecords()
-                .forEach(record -> {
+        Flux.fromStream(event.getRecords().stream())
+                .subscribe(record -> {
                     List<IngestionRule> failures = new ArrayList<>();
 
                     var key = record.getS3().getObject().getKey();
