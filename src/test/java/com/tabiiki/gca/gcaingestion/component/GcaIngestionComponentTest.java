@@ -6,7 +6,9 @@ import com.tabiiki.gca.gcaingestion.facade.SNSFacade;
 import com.tabiiki.gca.gcaingestion.facade.SQSMessageClientFacade;
 import com.tabiiki.gca.gcaingestion.listener.SQSLongPollingListener;
 import com.tabiiki.gca.gcaingestion.service.IngestionService;
+import com.tabiiki.gca.gcaingestion.service.PublishService;
 import com.tabiiki.gca.gcaingestion.service.impl.IngestionServiceImpl;
+import com.tabiiki.gca.gcaingestion.service.impl.PublishServiceImpl;
 import com.tabiiki.gca.gcaingestion.util.SqsTestMessageBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,7 +35,8 @@ public class GcaIngestionComponentTest {
 
     private final SNSFacade snsFacade = new SNSFacade("fake", snsClient);
 
-    private final IngestionService ingestionService = new IngestionServiceImpl(is3Facade, snsFacade);
+    private final PublishService publishService = new PublishServiceImpl(is3Facade, snsFacade);
+    private final IngestionService ingestionService = new IngestionServiceImpl(is3Facade, publishService);
     private final SQSLongPollingListener sqsLongPollingListener = new SQSLongPollingListener(sqsMessageClientFacade, ingestionService);
 
 

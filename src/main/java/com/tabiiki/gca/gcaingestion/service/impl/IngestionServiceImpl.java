@@ -1,19 +1,16 @@
 package com.tabiiki.gca.gcaingestion.service.impl;
 
 import com.amazonaws.services.s3.event.S3EventNotification;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tabiiki.gca.gcaingestion.facade.S3Facade;
-import com.tabiiki.gca.gcaingestion.facade.SNSFacade;
-import com.tabiiki.gca.gcaingestion.message.IngestionMessage;
-import com.tabiiki.gca.gcaingestion.message.IngestionStatus;
 import com.tabiiki.gca.gcaingestion.model.ClaimPack;
 import com.tabiiki.gca.gcaingestion.rule.IngestionRule;
 import com.tabiiki.gca.gcaingestion.service.IngestionService;
+import com.tabiiki.gca.gcaingestion.service.PublishService;
 import com.tabiiki.gca.gcaingestion.transform.ClaimPackTransformer;
 import com.tabiiki.gca.gcaingestion.util.S3ObjectConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -21,7 +18,7 @@ import reactor.core.publisher.Mono;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -29,63 +26,68 @@ import java.util.UUID;
 public class IngestionServiceImpl implements IngestionService {
 
     private final S3Facade s3Facade;
-    private final SNSFacade snsFacade;
+    private final PublishService publishService;
 
     @Override
     public void ingest(S3EventNotification event) {
         log.info("ingesting {}", event.toJson());
 
         Flux.fromStream(event.getRecords().stream())
-                .subscribe(record -> {
-                    List<IngestionRule> failures = new ArrayList<>();
-
-                    var key = record.getS3().getObject().getKey();
-                    var id = key.replace("upload/", "").replace(".xlsx", "");
-                    log.info("key: {}, id: {}", key, id);
-
-                    Mono.just(Pair.of(key, id))
-                            .doOnNext(keys -> process(keys, failures))
-                            .doFinally(publish -> publish(id, failures))
-                            .subscribe();
-                });
+                .subscribe(record ->
+                        Mono.just(prepare(record))
+                                .map(this::extract)
+                                .map(this::validate)
+                                .doOnNext(publishService::publish)
+                                .subscribe());
 
     }
 
-    private void process(Pair<String, String> keys, List<IngestionRule> failures) {
-        var key = keys.getLeft();
-        var id = keys.getRight();
+    private Triple<String, String, List<IngestionRule>> prepare(
+            S3EventNotification.S3EventNotificationRecord record
+    ) {
+        final List<IngestionRule> failures = new ArrayList<>();
+
+        var key = record.getS3().getObject().getKey();
+        var id = key.replace("upload/", "").replace(".xlsx", "");
+
+        log.info("key: {}, id: {}", key, id);
+
+        return Triple.of(key, id, failures);
+    }
+
+    private Triple<String, Optional<ClaimPack>, List<IngestionRule>> extract(
+            Triple<String, String, List<IngestionRule>> config
+    ) {
+        var key = config.getLeft();
+        var id = config.getMiddle();
+        var failures = config.getRight();
         try {
-            var claimPack = extract(key, failures);
-            validate(claimPack, failures);
-            s3Facade.put("final/" + id, new ObjectMapper().writeValueAsString(claimPack));
+            var claimPack = ClaimPackTransformer.transform(
+                    S3ObjectConverter.convertExcel(s3Facade.get(key)), key);
+
+            if (!claimPack.getExceptions().isEmpty()) {
+                failures.add(IngestionRule.EXCEL_FIELDS);
+            }
+            return Triple.of(id, Optional.of(claimPack), failures);
         } catch (IOException e) {
             failures.add(IngestionRule.EXCEL_FATAL);
             log.error("failed to convert excel file for {}", key, e);
         }
-
+        return Triple.of(id, Optional.empty(), failures);
     }
 
-    private ClaimPack extract(String key, List<IngestionRule> failures) throws IOException {
-        var claimPack = ClaimPackTransformer.transform(
-                S3ObjectConverter.convertExcel(s3Facade.get(key)), key);
-        if (!claimPack.getExceptions().isEmpty()) {
-            failures.add(IngestionRule.EXCEL_FIELDS);
-        }
-        return claimPack;
-    }
+    private Triple<String, Optional<ClaimPack>, List<IngestionRule>> validate(
+            Triple<String, Optional<ClaimPack>, List<IngestionRule>> config
+    ) {
+        var id = config.getLeft();
+        var optionalClaimPack = config.getMiddle();
+        var failures = config.getRight();
 
-    private void validate(ClaimPack claimPack, List<IngestionRule> failures) {
-        //TODO rule engine part.
-    }
+        optionalClaimPack.ifPresent(claimPack -> {
+            //TODO rule engine part.
+        });
 
-    private void publish(String id, List<IngestionRule> failures) {
-        snsFacade.publish(
-                IngestionMessage.builder()
-                        .id(UUID.fromString(id))
-                        .ingestionStatus(failures.isEmpty() ? IngestionStatus.SUCCESS : IngestionStatus.ERROR)
-                        .ruleFailures(failures)
-                        .build()
-        );
+        return config;
     }
 
 }
