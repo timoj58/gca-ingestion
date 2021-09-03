@@ -26,8 +26,8 @@ public class PublishServiceImpl implements PublishService {
 
     @Override
     public void publish(ClaimPackWrapper finalClaim) {
-        var id = finalClaim.getLeft();
-        var failures = finalClaim.getRight();
+        var id = finalClaim.getId();
+        var failures = finalClaim.getFailures();
         log.info("publishing {}", id);
 
         Mono.just(finalClaim)
@@ -46,9 +46,9 @@ public class PublishServiceImpl implements PublishService {
     }
 
     private void upload(ClaimPackWrapper finalClaim) {
-        var id = finalClaim.getLeft();
-        var optionalClaimPack = finalClaim.getMiddle();
-        var failures = finalClaim.getRight();
+        var id = finalClaim.getId();
+        var optionalClaimPack = finalClaim.getClaimPack();
+        var failures = finalClaim.getFailures();
 
         optionalClaimPack.ifPresent(claimPack -> {
             try {

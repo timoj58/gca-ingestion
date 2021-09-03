@@ -42,9 +42,7 @@ public class IngestionServiceImpl implements IngestionService {
 
     }
 
-    private IngestionKeyWrapper prepare(
-            S3EventNotification.S3EventNotificationRecord record
-    ) {
+    private IngestionKeyWrapper prepare(S3EventNotification.S3EventNotificationRecord record) {
         final List<IngestionRule> failures = new ArrayList<>();
 
         var key = record.getS3().getObject().getKey();
@@ -53,15 +51,17 @@ public class IngestionServiceImpl implements IngestionService {
         log.info("key: {}, id: {}", key, id);
         log.info("timmytime {}", key);
 
-        return new IngestionKeyWrapper(key, id, failures);
+        return IngestionKeyWrapper.builder()
+                .id(id)
+                .key(key)
+                .failures(failures)
+                .build();
     }
 
-    private ClaimPackWrapper extract(
-            IngestionKeyWrapper wrapper
-    ) {
-        var key = wrapper.getLeft();
-        var id = wrapper.getMiddle();
-        var failures = wrapper.getRight();
+    private ClaimPackWrapper extract(IngestionKeyWrapper wrapper) {
+        var key = wrapper.getKey();
+        var id = wrapper.getId();
+        var failures = wrapper.getFailures();
         try {
             var claimPack = ClaimPackTransformer.transform(
                     S3ObjectConverter.convertExcel(s3Facade.get(key)), key);
@@ -69,20 +69,27 @@ public class IngestionServiceImpl implements IngestionService {
             if (!claimPack.getExceptions().isEmpty()) {
                 failures.add(IngestionRule.EXCEL_FIELDS);
             }
-            return new ClaimPackWrapper(id, Optional.of(claimPack), failures);
+            return ClaimPackWrapper.builder()
+                    .id(id)
+                    .claimPack(Optional.of(claimPack))
+                    .failures(failures)
+                    .build();
+
         } catch (IOException e) {
             failures.add(IngestionRule.EXCEL_FATAL);
             log.error("failed to convert excel file for {}", key, e);
         }
-        return new ClaimPackWrapper(id, Optional.empty(), failures);
+        return ClaimPackWrapper.builder()
+                .id(id)
+                .claimPack(Optional.empty())
+                .failures(failures)
+                .build();
     }
 
-    private ClaimPackWrapper validate(
-            ClaimPackWrapper wrapper
-    ) {
-        var id = wrapper.getLeft();
-        var optionalClaimPack = wrapper.getMiddle();
-        var failures = wrapper.getRight();
+    private ClaimPackWrapper validate(ClaimPackWrapper wrapper) {
+        var id = wrapper.getId();
+        var optionalClaimPack = wrapper.getClaimPack();
+        var failures = wrapper.getFailures();
 
         optionalClaimPack.ifPresent(claimPack -> {
             //TODO rule engine part.
