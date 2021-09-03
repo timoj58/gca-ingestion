@@ -6,17 +6,14 @@ import com.tabiiki.gca.gcaingestion.facade.S3Facade;
 import com.tabiiki.gca.gcaingestion.facade.SNSFacade;
 import com.tabiiki.gca.gcaingestion.message.IngestionMessage;
 import com.tabiiki.gca.gcaingestion.message.IngestionStatus;
-import com.tabiiki.gca.gcaingestion.model.ClaimPack;
 import com.tabiiki.gca.gcaingestion.rule.IngestionRule;
 import com.tabiiki.gca.gcaingestion.service.PublishService;
+import com.tabiiki.gca.gcaingestion.wrapper.ClaimPackWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -28,7 +25,7 @@ public class PublishServiceImpl implements PublishService {
     private final SNSFacade snsFacade;
 
     @Override
-    public void publish(Triple<String, Optional<ClaimPack>, List<IngestionRule>> finalClaim) {
+    public void publish(ClaimPackWrapper finalClaim) {
         var id = finalClaim.getLeft();
         var failures = finalClaim.getRight();
         log.info("publishing {}", id);
@@ -48,7 +45,7 @@ public class PublishServiceImpl implements PublishService {
 
     }
 
-    private void upload(Triple<String, Optional<ClaimPack>, List<IngestionRule>> finalClaim) {
+    private void upload(ClaimPackWrapper finalClaim) {
         var id = finalClaim.getLeft();
         var optionalClaimPack = finalClaim.getMiddle();
         var failures = finalClaim.getRight();
@@ -58,7 +55,7 @@ public class PublishServiceImpl implements PublishService {
                 s3Facade.put("final/" + id, new ObjectMapper().writeValueAsString(claimPack));
             } catch (JsonProcessingException e) {
                 log.error("json error on upload for {}", id, e);
-                failures.add(IngestionRule.EXCEL_FATAL);
+                failures.add(IngestionRule.UPLOAD_FATAL);
             }
         });
     }

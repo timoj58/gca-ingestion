@@ -2,15 +2,15 @@ package com.tabiiki.gca.gcaingestion.service.impl;
 
 import com.amazonaws.services.s3.event.S3EventNotification;
 import com.tabiiki.gca.gcaingestion.facade.S3Facade;
-import com.tabiiki.gca.gcaingestion.model.ClaimPack;
 import com.tabiiki.gca.gcaingestion.rule.IngestionRule;
 import com.tabiiki.gca.gcaingestion.service.IngestionService;
 import com.tabiiki.gca.gcaingestion.service.PublishService;
 import com.tabiiki.gca.gcaingestion.transform.ClaimPackTransformer;
 import com.tabiiki.gca.gcaingestion.util.S3ObjectConverter;
+import com.tabiiki.gca.gcaingestion.wrapper.ClaimPackWrapper;
+import com.tabiiki.gca.gcaingestion.wrapper.IngestionKeyWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -42,7 +42,7 @@ public class IngestionServiceImpl implements IngestionService {
 
     }
 
-    private Triple<String, String, List<IngestionRule>> prepare(
+    private IngestionKeyWrapper prepare(
             S3EventNotification.S3EventNotificationRecord record
     ) {
         final List<IngestionRule> failures = new ArrayList<>();
@@ -51,16 +51,17 @@ public class IngestionServiceImpl implements IngestionService {
         var id = key.replace("upload/", "").replace(".xlsx", "");
 
         log.info("key: {}, id: {}", key, id);
+        log.info("timmytime {}", key);
 
-        return Triple.of(key, id, failures);
+        return new IngestionKeyWrapper(key, id, failures);
     }
 
-    private Triple<String, Optional<ClaimPack>, List<IngestionRule>> extract(
-            Triple<String, String, List<IngestionRule>> config
+    private ClaimPackWrapper extract(
+            IngestionKeyWrapper wrapper
     ) {
-        var key = config.getLeft();
-        var id = config.getMiddle();
-        var failures = config.getRight();
+        var key = wrapper.getLeft();
+        var id = wrapper.getMiddle();
+        var failures = wrapper.getRight();
         try {
             var claimPack = ClaimPackTransformer.transform(
                     S3ObjectConverter.convertExcel(s3Facade.get(key)), key);
@@ -68,26 +69,26 @@ public class IngestionServiceImpl implements IngestionService {
             if (!claimPack.getExceptions().isEmpty()) {
                 failures.add(IngestionRule.EXCEL_FIELDS);
             }
-            return Triple.of(id, Optional.of(claimPack), failures);
+            return new ClaimPackWrapper(id, Optional.of(claimPack), failures);
         } catch (IOException e) {
             failures.add(IngestionRule.EXCEL_FATAL);
             log.error("failed to convert excel file for {}", key, e);
         }
-        return Triple.of(id, Optional.empty(), failures);
+        return new ClaimPackWrapper(id, Optional.empty(), failures);
     }
 
-    private Triple<String, Optional<ClaimPack>, List<IngestionRule>> validate(
-            Triple<String, Optional<ClaimPack>, List<IngestionRule>> config
+    private ClaimPackWrapper validate(
+            ClaimPackWrapper wrapper
     ) {
-        var id = config.getLeft();
-        var optionalClaimPack = config.getMiddle();
-        var failures = config.getRight();
+        var id = wrapper.getLeft();
+        var optionalClaimPack = wrapper.getMiddle();
+        var failures = wrapper.getRight();
 
         optionalClaimPack.ifPresent(claimPack -> {
             //TODO rule engine part.
         });
 
-        return config;
+        return wrapper;
     }
 
 }
